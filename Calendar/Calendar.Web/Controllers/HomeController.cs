@@ -1,4 +1,5 @@
 ﻿using Calendar.Web.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,10 +13,14 @@ namespace Calendar.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            RoleManager<IdentityRole> roleManager)
         {
             _logger = logger;
+            this.roleManager = roleManager;
         }
 
         public IActionResult Index()
@@ -26,6 +31,13 @@ namespace Calendar.Web.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public async Task<IActionResult> CreateAdminRole()
+        {
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+            return RedirectToAction(nameof(Privacy));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

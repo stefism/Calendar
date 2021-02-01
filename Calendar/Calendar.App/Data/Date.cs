@@ -22,5 +22,7 @@ namespace Calendar.App.Data
         public string UserId { get; set; }
 
         public bool IsReserved { get; set; }
+
+        public bool IsNonWorkDay { get; set; }
     }
 }

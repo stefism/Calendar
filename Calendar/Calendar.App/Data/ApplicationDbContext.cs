@@ -14,5 +14,7 @@ namespace Calendar.App.Data
         }
 
         public DbSet<Date> Dates { get; set; }
+
+        public DbSet<Price> Prices { get; set; }
     }
 }

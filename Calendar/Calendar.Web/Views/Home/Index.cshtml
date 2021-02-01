@@ -14,6 +14,13 @@
 <body>    
     <h1>Calendar</h1>
 
+    @if (User.IsInRole("Admin"))
+    {
+        <div>
+
+        </div>
+    }
+
     <div id="showcase-wrapper">
         <div id="myCalendarWrapper"></div>
         <div id="example">
