@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Calendar.App.Services;
 
 namespace Calendar.Web
 {
@@ -36,6 +37,8 @@ namespace Calendar.Web
             
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddTransient<IDataService, DataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
