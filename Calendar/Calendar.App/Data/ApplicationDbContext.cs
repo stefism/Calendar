@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Calendar.Web.Data
+namespace Calendar.App.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
@@ -12,5 +12,7 @@ namespace Calendar.Web.Data
             : base(options)
         {
         }
+
+        public DbSet<Date> Dates { get; set; }
     }
 }
