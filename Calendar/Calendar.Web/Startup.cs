@@ -40,6 +40,7 @@ namespace Calendar.Web
             services.AddRazorPages();
 
             services.AddTransient<IDataService, DataService>();
+            services.AddTransient<IPriceService, PriceService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

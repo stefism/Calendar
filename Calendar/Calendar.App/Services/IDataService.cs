@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Calendar.App.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,10 @@ namespace Calendar.App.Services
     {
         Task ReserveDate(DateTime date, string userId);
 
-        Task AddAvailableDate(DateTime date, decimal price);
+        Task AddAvailableDate(DateTime date, bool IsNonWorkDay, string userId);
+
+        Task ChangePrices(decimal workday, decimal weekends);
+
+        bool IsNonWorkDay(DateTime date);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Calendar.Web.Controllers
 {
@@ -25,9 +26,13 @@ namespace Calendar.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddAvailableDate(DateTime date, decimal price)
+        public async Task<IActionResult> AddAvailableDate(DateTime date)
         {
-            dataService.AddAvailableDate(date, price);
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            bool isNonWorkDay = dataService.IsNonWorkDay(date);
+
+            await dataService.AddAvailableDate(date, isNonWorkDay, userId);
 
             return Ok();
         }

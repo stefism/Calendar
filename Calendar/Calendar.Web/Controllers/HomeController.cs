@@ -1,4 +1,5 @@
-﻿using Calendar.Web.Models;
+﻿using Calendar.App.Services;
+using Calendar.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,18 +15,33 @@ namespace Calendar.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IDataService dataService;
+        private readonly IPriceService priceService;
 
         public HomeController(
             ILogger<HomeController> logger,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IDataService dataService,
+            IPriceService priceService)
         {
             _logger = logger;
             this.roleManager = roleManager;
+            this.dataService = dataService;
+            this.priceService = priceService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var model = await priceService.ReturnPrices();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePrices(decimal workday, decimal weekends)
+        {
+            await dataService.ChangePrices(workday, weekends);
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()

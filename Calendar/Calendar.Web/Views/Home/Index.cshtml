@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Calendar.App.ViewModels.PricesViewModel
+@{
     ViewData["Title"] = "Calendar";
 }
 
@@ -11,13 +12,27 @@
     <link href="~/css/style.css" rel="stylesheet" />
 </head>
 
-<body>    
+<body>
     <h1>Calendar</h1>
 
     @if (User.IsInRole("Admin"))
     {
         <div>
+            <hr />
+            <p>Current workday price: <b>@Model.WorkDay</b> | Current weekend price: <b>@Model.NonWorkDay</b></p>
+            <hr />
+        </div>
 
+        <div>
+            <form method="post" asp-controller="Home" asp-action="ChangePrices">
+                <label for="workday">Insert new workdays price: </label>
+                <input type="number" step="any" name="workday" />
+
+                <label for="weekends">Insert new weekends price: </label>
+                <input type="number" step="any" name="weekends" />
+
+                <button type="submit">Change</button>
+            </form>
         </div>
     }
 
@@ -46,27 +61,32 @@
 
     <script>
         const nextYear = new Date().getFullYear() + 1;
-        const myCalender = new CalendarPicker('#myCalendarWrapper', {
-            // If max < min or min > max then the only available day will be today.
-            min: new Date(),
-            max: new Date(nextYear, 10) // NOTE: new Date(nextYear, 10) is "Sun Nov 01 <nextYear>"
-        });
-
-        const currentDateElement = document.getElementById('current-date');
-        currentDateElement.textContent = myCalender.value;
-
-        const currentDayElement = document.getElementById('current-day');
-        currentDayElement.textContent = myCalender.value.getDay();
-
-        const currentToDateString = document.getElementById('current-datestring');
-        currentToDateString.textContent = myCalender.value.toDateString();
+        const myCalender = new CalendarPicker('#myCalendarWrapper',
+            {
+                // If max < min or min > max then the only available day will be today.
+                min: new Date(),
+                max: new Date(nextYear, 10) // NOTE: new Date(nextYear, 10) is "Sun Nov 01 <nextYear>"
+            });
 
         myCalender.onValueChange((currentValue) => {
-            currentDateElement.textContent = currentValue;
-            currentDayElement.textContent = currentValue.getDay();
-            currentToDateString.textContent = currentValue.toDateString();
 
-            console.log(`The current value of the calendar is: ${currentValue}`);
-        });</script>
+            var date = new Date(currentValue);
+            console.log(`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`);
+
+            $.ajax({
+                type: "POST",
+                url: "/data/AddAvailableDate",
+                data: {
+                    date: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+                },
+                success: function (data) {
+                },
+                error: function (error) {
+                    alert('Something went wrong!');
+                }
+            });
+
+        });
+    </script>
 }
 
