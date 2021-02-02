@@ -28,7 +28,7 @@ namespace Calendar.App.Services
         }
 
         public async Task<ICollection<ReservationViewModel>> ShowAllReservations()
-        {
+        { 
             var reservations = await db.Dates.Select(p => new ReservationViewModel
             {
                 ReservationDateId = p.Id,
