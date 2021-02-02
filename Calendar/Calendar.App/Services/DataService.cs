@@ -14,15 +14,18 @@ namespace Calendar.App.Services
         private ApplicationDbContext db;
         private readonly IPriceService priceService;
         private readonly IEFRepository<Date> dateRepository;
+        private readonly IEFRepository<Price> pricePepository;
 
         public DataService(
-            ApplicationDbContext db, 
+            ApplicationDbContext db,
             IPriceService priceService,
-            IEFRepository<Date> dateRepository)
+            IEFRepository<Date> dateRepository,
+            IEFRepository<Price> pricePepository)
         {
             this.db = db;
             this.priceService = priceService;
             this.dateRepository = dateRepository;
+            this.pricePepository = pricePepository;
         }
 
         public async Task ReleaseReservation(string reservationId)
@@ -50,17 +53,6 @@ namespace Calendar.App.Services
             return reservations;
         }
 
-        public async Task ReserveDate(DateTime date, string userId)
-        {
-            var dateToReserve = await dateRepository.All()
-                .Where(d => d.ReservedDate == date).FirstOrDefaultAsync();
-
-            dateToReserve.UserId = userId;
-            dateToReserve.IsReserved = true;
-            
-            await dateRepository.SaveChangesAsync();
-        }
-
         public async Task AddAvailableDate(DateTime date, bool isNonWorkDay, string userId)
         {
             var actualPrice = await priceService.ReturnActualPrice(isNonWorkDay);
@@ -73,8 +65,8 @@ namespace Calendar.App.Services
                 IsNonWorkDay = isNonWorkDay,
             };
 
-            await db.Dates.AddAsync(availableDate);
-            await db.SaveChangesAsync();
+            await dateRepository.AddAsync(availableDate);
+            await dateRepository.SaveChangesAsync();
         }
 
         public bool IsNonWorkDay(DateTime date)
@@ -92,7 +84,8 @@ namespace Calendar.App.Services
 
         public async Task<ICollection<ReservationViewModel>> GetDates(int year, int month)
         {
-            return await db.Dates.Select(p => new ReservationViewModel
+            return await dateRepository.All()
+                .Select(p => new ReservationViewModel
                 {
                     ReservationDateId = p.Id,
                     UserId = p.UserId,
@@ -109,7 +102,7 @@ namespace Calendar.App.Services
 
         public async Task ChangePrices(decimal workday, decimal weekends)
         {
-            var prices = await db.Prices.FirstOrDefaultAsync();
+            var prices = await pricePepository.All().FirstOrDefaultAsync();
 
             if (prices == null)
             {
@@ -119,7 +112,7 @@ namespace Calendar.App.Services
                     NonWorkDay = weekends,
                 };
 
-                await db.Prices.AddAsync(prices);
+                await pricePepository.AddAsync(prices);
             }
             else
             {
@@ -127,7 +120,7 @@ namespace Calendar.App.Services
                 prices.NonWorkDay = weekends;
             }
 
-            await db.SaveChangesAsync();
+            await pricePepository.SaveChangesAsync();
         }
     }
 }

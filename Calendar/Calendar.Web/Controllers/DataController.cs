@@ -19,16 +19,6 @@ namespace Calendar.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult ReserveDate(DateTime date)
-        {
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            dataService.ReserveDate(date, userId);
-
-            return Ok();
-        }
-
-        [HttpPost]
         public async Task<IActionResult> AddAvailableDate(DateTime date)
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;

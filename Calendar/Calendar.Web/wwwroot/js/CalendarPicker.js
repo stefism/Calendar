@@ -370,9 +370,9 @@ CalendarPicker.prototype._setCurrentMonthEvents = function () {
 
                     //Check if the day is Saturday or Sunday
                     if (day === 6 || day === 0) {
-                        timeTag.innerText += "\r\nPrice: " + weekendPrice;
+                        timeTag.innerText += "\r\nPrice: " + weekendPrice.toFixed(2);
                     } else {
-                        timeTag.innerText += "\r\nPrice: " + workDaysPrice;
+                        timeTag.innerText += "\r\nPrice: " + workDaysPrice.toFixed(2);
                     }
 
                     timeTag.isReserved = false;

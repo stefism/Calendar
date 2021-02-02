@@ -7,8 +7,6 @@ namespace Calendar.App.Services
 {
     public interface IDataService
     {
-        Task ReserveDate(DateTime date, string userId);
-
         Task<ICollection<ReservationViewModel>> ShowAllReservations();
 
         Task ReleaseReservation(string reservationId);
