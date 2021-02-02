@@ -35,7 +35,7 @@ namespace Calendar.App.Services
 
             dateRepository.Delete(reservation);          
 
-            await dateRepository.SaveChangesAsync();            
+            await dateRepository.SaveChangesAsync();          
         }
 
         public async Task<ICollection<ReservationViewModel>> ShowAllReservations()
