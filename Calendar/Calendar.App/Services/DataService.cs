@@ -20,6 +20,19 @@ namespace Calendar.App.Services
             this.priceService = priceService;
         }
 
+        public async Task<IEnumerable<AllReservationViewModel>> ShowAllReservations()
+        {
+            var reservations = await db.Dates.Select(p => new AllReservationViewModel
+            {
+                UserId = p.UserId,
+                Username = db.Users.Where(u => u.Id == p.UserId).Select(u => u.UserName).FirstOrDefault(),
+                ReservedDate = p.ReservedDate.ToString(),
+                Price = p.Price.ToString(),
+            }).ToListAsync();
+
+            return reservations;
+        }
+
         public async Task ReserveDate(DateTime date, string userId)
         {
             var dateToReserve = db.Dates

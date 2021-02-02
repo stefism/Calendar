@@ -10,6 +10,8 @@ namespace Calendar.App.Services
     {
         Task ReserveDate(DateTime date, string userId);
 
+        Task<IEnumerable<AllReservationViewModel>> ShowAllReservations();
+
         Task AddAvailableDate(DateTime date, bool IsNonWorkDay, string userId);
 
         Task ChangePrices(decimal workday, decimal weekends);

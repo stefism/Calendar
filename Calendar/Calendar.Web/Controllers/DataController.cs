@@ -36,5 +36,12 @@ namespace Calendar.Web.Controllers
 
             return Ok();
         }
+
+        public async Task<IActionResult> AllReservations()
+        {
+            var model = await dataService.ShowAllReservations();
+
+            return View(model);
+        }
     }
 }
