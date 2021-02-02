@@ -20,15 +20,25 @@ namespace Calendar.App.Services
             this.priceService = priceService;
         }
 
+        public async Task ReleaseReservation(string reservationId)
+        {
+            var reservation = await db.Dates.Where(r => r.Id == reservationId).FirstOrDefaultAsync();
+            
+            db.Remove(reservation);
+            await db.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<AllReservationViewModel>> ShowAllReservations()
         {
             var reservations = await db.Dates.Select(p => new AllReservationViewModel
             {
+                ReservationDateId = p.Id,
                 UserId = p.UserId,
                 Username = db.Users.Where(u => u.Id == p.UserId).Select(u => u.UserName).FirstOrDefault(),
-                ReservedDate = p.ReservedDate.ToString(),
+                ReservedDate = p.ReservedDate,
                 Price = p.Price.ToString(),
-            }).ToListAsync();
+            }).OrderBy(p => p.ReservedDate)
+                .ToListAsync();
 
             return reservations;
         }

@@ -45,5 +45,12 @@ namespace Calendar.Web.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> ReleaseReservaton(string reservationId)
+        {
+            await dataService.ReleaseReservation(reservationId);
+
+            return RedirectToAction(nameof(AllReservations));
+        }
     }
 }

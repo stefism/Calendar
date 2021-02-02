@@ -12,14 +12,18 @@
             <th>Username</th>
             <th>Reserved date</th>
             <th>Price</th>
+            <th>Release reservation </th>
         </tr>
 
         @foreach (var reservation in Model)
         {
             <tr>
                 <td>@reservation.Username</td>
-                <td>@reservation.ReservedDate</td>
+                <td>@reservation.ReservedDate.Value.ToString("dd/MM/yyyy")</td>
                 <td>@reservation.Price</td>
+                <td>
+                    <a class="btn btn-success" asp-controller="Data" asp-action="ReleaseReservaton" asp-route-reservationId="@reservation.ReservationDateId">Release</a>
+                </td>
             </tr>
         }
     </table>
