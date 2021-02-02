@@ -1,13 +1,13 @@
 // Polyfill for Element.prototype.closest (for IE 9+)
 if (!Element.prototype.matches) { Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector; }
 if (!Element.prototype.closest) {
-    Element.prototype.closest = function(s) {
-      var el = this;
-      do {
-        if (Element.prototype.matches.call(el, s)) return el;
-        el = el.parentElement || el.parentNode;
-      } while (el !== null && el.nodeType === 1);
-      return null;
+    Element.prototype.closest = function (s) {
+        var el = this;
+        do {
+            if (Element.prototype.matches.call(el, s)) return el;
+            el = el.parentElement || el.parentNode;
+        } while (el !== null && el.nodeType === 1);
+        return null;
     };
 }
 
@@ -19,9 +19,10 @@ if (!Element.prototype.closest) {
 function CalendarPicker(element, options) {
     // Core variables.
     this.date = new Date();
+    this.currentMonthEvents = [];
     this._formatDateToInit(this.date);
 
-    this.day = this.date.getDay()
+    this.day = this.date.getDay();
     this.month = this.date.getMonth();
     this.year = this.date.getFullYear();
 
@@ -45,13 +46,13 @@ function CalendarPicker(element, options) {
 
     // The elements used to build the calendar.
     this.calendarWrapper = document.createElement('div');
-    this.calendarElement = document.createElement('div')
+    this.calendarElement = document.createElement('div');
     this.calendarHeader = document.createElement('header');
     this.calendarHeaderTitle = document.createElement('h4');
-    this.navigationWrapper = document.createElement('section')
+    this.navigationWrapper = document.createElement('section');
     this.previousMonthArrow = document.createElement('button');
     this.nextMonthArrow = document.createElement('button');
-    this.calendarGridDays = document.createElement('section')
+    this.calendarGridDays = document.createElement('section');
     this.calendarGrid = document.createElement('section');
     this.calendarDayElementType = 'time';
 
@@ -98,6 +99,7 @@ function CalendarPicker(element, options) {
     this._insertCalendarIntoWrapper();
 
     this.userElement.appendChild(this.calendarWrapper);
+    this._setCurrentMonthEvents();
 }
 
 
@@ -151,6 +153,7 @@ CalendarPicker.prototype._insertCalendarIntoWrapper = function () {
      * @param {Event} event An event from an eventListener.
      */
     var handleSelectedElement = (event) => {
+
         if (event.target.nodeName.toLowerCase() === this.calendarDayElementType && !event.target.classList.contains('disabled')) {
 
             // Removes the 'selected' class from all elements that have it.
@@ -163,6 +166,32 @@ CalendarPicker.prototype._insertCalendarIntoWrapper = function () {
 
             // Fires the onValueChange function with the provided callback.
             this.onValueChange(this.callback);
+
+            let date = new Date(this.value);
+            let selectedDate = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
+
+            if (event.target.isReserved === false) {
+
+                DayPilot.Modal.confirm(`Do you want to reserve ${selectedDate}?`, { theme: "modal_rounded" }).then(function (args) {
+                    if (args.result) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/data/AddAvailableDate",
+                            data: {
+                                date: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+                            },
+                            success: function () {
+                                event.target.isReserved = true;
+                                event.target.innerText = event.target.innerText.substring(0, 2) + "\r\nReserved!";
+                                event.target.setAttribute("style", "background-color: rgba(247, 6, 33, 0.3)");
+                            },
+                            error: function (error) {
+                                alert('Something went wrong!');
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 
@@ -192,7 +221,7 @@ CalendarPicker.prototype._insertCalendarGridDaysHeader = function () {
         var dayElement = document.createElement('span');
         dayElement.textContent = day;
         this.calendarGridDays.appendChild(dayElement);
-    })
+    });
 
     this.calendarElement.appendChild(this.calendarGridDays);
 }
@@ -236,7 +265,7 @@ CalendarPicker.prototype._insertNavigationButtons = function () {
             }
             that._updateCalendar();
         }
-    }, false)
+    }, false);
 
     that.calendarElement.appendChild(that.navigationWrapper);
 }
@@ -267,7 +296,8 @@ CalendarPicker.prototype._insertDaysIntoGrid = function () {
         var dateIsTheCurrentValue = this.value.toString() === date.toString();
         if (dateIsTheCurrentValue) this.activeDateElement = dateElement;
 
-        var dateIsBetweenAllowedRange = (this.min || this.max) && (date.toString() !== this.today.toString() && (date < this.min || date > this.max))
+        var dateIsBetweenAllowedRange = (this.min || this.max) &&
+            (date.toString() !== this.today.toString() && (date < this.min || date > this.max))
         if (dateIsBetweenAllowedRange) {
             dateElement.classList.add('disabled');
         } else {
@@ -277,7 +307,7 @@ CalendarPicker.prototype._insertDaysIntoGrid = function () {
 
         dateElement.textContent = date ? Date : '';
         this.calendarGrid.appendChild(dateElement);
-    })
+    });
 
     this.calendarElement.appendChild(this.calendarGrid);
     this.activeDateElement.classList.add('selected');
@@ -290,8 +320,6 @@ CalendarPicker.prototype._insertDaysIntoGrid = function () {
 CalendarPicker.prototype._updateCalendar = function () {
     this.date = new Date(this.year, this.month);
 
-    this._setDateText();
-
     this.day = this.date.getDay();
     this.month = this.date.getMonth();
     this.year = this.date.getFullYear();
@@ -301,7 +329,9 @@ CalendarPicker.prototype._updateCalendar = function () {
     window.requestAnimationFrame(function () {
         that.calendarHeaderTitle.textContent = that.listOfAllMonthsAsText[that.month] + ' - ' + that.year;
         that._insertDaysIntoGrid();
-    })
+    });
+
+    this._setCurrentMonthEvents();
 }
 
 /**
@@ -311,5 +341,60 @@ CalendarPicker.prototype._updateCalendar = function () {
 CalendarPicker.prototype.onValueChange = function (callback) {
     if (this.callback) return this.callback(this.value);
     this.callback = callback;
+};
+
+CalendarPicker.prototype._setCurrentMonthEvents = function () {
+    $.ajax({
+        type: "GET",
+        url: "/data/GetDates",
+        data: {
+            year: this.year,
+            month: (this.month + 1)
+        },
+        success: function (data) {
+            console.log(data);
+            var calendarDays = document.getElementsByTagName('time');
+            var weekendPrice = data.prices.nonWorkDay == null ? 0 : data.prices.nonWorkDay;
+            var workDaysPrice = data.prices.workDay == null ? 0 : data.prices.workDay;
+
+            for (let timeTag of calendarDays) {
+                if (timeTag.value == null) {
+                    continue;
+                }
+
+                var reservedDate = GetReservedDateIfExists(timeTag.value, data.reservedDays);
+
+                if (reservedDate == null) {
+
+                    var day = timeTag.value.getDay();
+
+                    //Check if the day is Saturday or Sunday
+                    if (day === 6 || day === 0) {
+                        timeTag.innerText += "\r\nPrice: " + weekendPrice;
+                    } else {
+                        timeTag.innerText += "\r\nPrice: " + workDaysPrice;
+                    }
+
+                    timeTag.isReserved = false;
+                    timeTag.setAttribute("style", "background-color: rgba(60, 176, 91, 0.3);");
+                } else {
+                    timeTag.isReserved = true;
+                    timeTag.innerText += "\r\nReserved!";
+                    timeTag.setAttribute("style", "background-color: rgba(247, 6, 33, 0.3)");
+                }
+            }
+        },
+        error: function (error) {
+            alert('Something went wrong!');
+        }
+    });
+}
+
+function GetReservedDateIfExists(currentSelectedDate, reservedDates) {
+    for (let reservedDate of reservedDates) {
+        if (new Date(reservedDate.reservedDate).getTime() === currentSelectedDate.getTime()) {
+            return reservedDate;
+        }
+    }
 }
 

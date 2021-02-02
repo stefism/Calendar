@@ -1,12 +1,7 @@
 ﻿using Calendar.App.Services;
-using Calendar.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Calendar.Web.Controllers
@@ -54,12 +49,6 @@ namespace Calendar.Web.Controllers
             await roleManager.CreateAsync(new IdentityRole("Admin"));
 
             return RedirectToAction(nameof(Privacy));
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Calendar.App.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Calendar.App.Services
@@ -10,7 +9,7 @@ namespace Calendar.App.Services
     {
         Task ReserveDate(DateTime date, string userId);
 
-        Task<IEnumerable<AllReservationViewModel>> ShowAllReservations();
+        Task<ICollection<ReservationViewModel>> ShowAllReservations();
 
         Task ReleaseReservation(string reservationId);
 
@@ -19,5 +18,7 @@ namespace Calendar.App.Services
         Task ChangePrices(decimal workday, decimal weekends);
 
         bool IsNonWorkDay(DateTime date);
+
+        Task<ICollection<ReservationViewModel>> GetDates(int year, int month);
     }
 }

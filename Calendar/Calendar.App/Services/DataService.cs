@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Calendar.App.Services
@@ -28,9 +27,9 @@ namespace Calendar.App.Services
             await db.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<AllReservationViewModel>> ShowAllReservations()
+        public async Task<ICollection<ReservationViewModel>> ShowAllReservations()
         {
-            var reservations = await db.Dates.Select(p => new AllReservationViewModel
+            var reservations = await db.Dates.Select(p => new ReservationViewModel
             {
                 ReservationDateId = p.Id,
                 UserId = p.UserId,
@@ -81,6 +80,22 @@ namespace Calendar.App.Services
             }
 
             return IsNonWorkDay;
+        }
+
+        public async Task<ICollection<ReservationViewModel>> GetDates(int year, int month)
+        {
+            return await db.Dates.Select(p => new ReservationViewModel
+                {
+                    ReservationDateId = p.Id,
+                    UserId = p.UserId,
+                    Username = db.Users.Where(u => u.Id == p.UserId).Select(u => u.UserName).FirstOrDefault(),
+                    ReservedDate = p.ReservedDate,
+                    Price = p.Price.ToString(),
+                })
+                .Where(x => x.ReservedDate.HasValue &&
+                            x.ReservedDate.Value.Year == year &&
+                            x.ReservedDate.Value.Month == month)
+                .ToListAsync();
         }
 
         public async Task ChangePrices(decimal workday, decimal weekends)

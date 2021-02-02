@@ -1,7 +1,5 @@
 ﻿@model Calendar.App.ViewModels.PricesViewModel
-@{
-    ViewData["Title"] = "Calendar";
-}
+@{ ViewData["Title"] = "Calendar"; }
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/CalendarPicker.style.css">
+    <link rel="stylesheet" href="~/css/modal_rounded.css">
     <link href="~/css/style.css" rel="stylesheet" />
 </head>
 
@@ -16,56 +15,40 @@
     <h1>Calendar</h1>
     @if (!User.Identity.IsAuthenticated)
     {
-        <h3>Please login or register to use the calendar.</h3>
-    }
-    else
-    {
-        @if (User.IsInRole("Admin"))
-        {
-            <div class="align-items-center">
-                <hr />
-                <p>Current workday price: <b>@Model.WorkDay</b> | Current weekend price: <b>@Model.NonWorkDay</b> | Total amount of all reservations: <b>@Model.TotalAmount</b></p>
-                <hr />
-            </div>
+<h3>Please login or register to use the calendar.</h3> }
+            else
+            {
+@if (User.IsInRole("Admin"))
+{
+<div class="align-items-center">
+    <hr />
+    <p>Current workday price: <b>@Model.WorkDay</b> | Current weekend price: <b>@Model.NonWorkDay</b> | Total amount of all reservations: <b>@Model.TotalAmount</b></p>
+    <hr />
+</div>
 
-            <div class="row">
-                <form class="mr-5" method="post" asp-controller="Home" asp-action="ChangePrices">
-                    <label for="workday">Insert new workdays price: </label>
-                    <input type="number" step="any" name="workday" />
+                    <div class="row">
+                        <form class="mr-5" method="post" asp-controller="Home" asp-action="ChangePrices">
+                            <label for="workday">Insert new workdays price: </label>
+                            <input type="number" step="any" name="workday" />
 
-                    <label for="weekends">Insert new weekends price: </label>
-                    <input type="number" step="any" name="weekends" />
+                            <label for="weekends">Insert new weekends price: </label>
+                            <input type="number" step="any" name="weekends" />
 
-                    <button type="submit">Change</button>
-                </form>
+                            <button type="submit">Change</button>
+                        </form>
 
-                <a asp-controller="Data" asp-action="AllReservations" class="btn btn-success">All reservation</a>
-            </div>
-        }
+                        <a asp-controller="Data" asp-action="AllReservations" class="btn btn-success">All reservation</a>
+                    </div>}
 
-        <div id="showcase-wrapper">
-            <div id="myCalendarWrapper"></div>
-            <div id="example">
-                <h3>
-                    currentValue:
-                    <p id="current-date"></p>
-                </h3>
-                <h3>
-                    currentValue.getDay():
-                    <p id="current-day"></p>
-                </h3>
-                <h3>
-                    currentValue.toDateSring():
-                    <p id="current-datestring"></p>
-                </h3>
-            </div>
-        </div>
-    }
+                <div id="showcase-wrapper">
+                    <div id="myCalendarWrapper"></div>
+                </div>}
 </body>
 </html>
 
 @section Scripts {
     <script src="~/js/CalendarPicker.js"></script>
+    <script src="~/js/daypilot-modal.min-3.10.1.js"></script>
 
     <script>
         const nextYear = new Date().getFullYear() + 1;
@@ -75,26 +58,6 @@
                 min: new Date(),
                 max: new Date(nextYear, 10) // NOTE: new Date(nextYear, 10) is "Sun Nov 01 <nextYear>"
             });
-
-        myCalender.onValueChange((currentValue) => {
-
-            var date = new Date(currentValue);
-            console.log(`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`);
-
-            $.ajax({
-                type: "POST",
-                url: "/data/AddAvailableDate",
-                data: {
-                    date: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
-                },
-                success: function (data) {
-                },
-                error: function (error) {
-                    alert('Something went wrong!');
-                }
-            });
-
-        });
     </script>
 }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Calendar.App.ViewModels;
 
 namespace Calendar.Web.Controllers
 {
@@ -37,6 +38,19 @@ namespace Calendar.Web.Controllers
             await dataService.AddAvailableDate(date, isNonWorkDay, userId);
 
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetDates(int year, int month)
+        {
+            var prices = await priceService.ReturnPrices();
+            var reservedDays = await dataService.GetDates(year, month);
+
+            return new JsonResult(new ReservedDaysAndPricesViewModel
+            {
+                Prices = prices,
+                ReservedDays = reservedDays
+            });
         }
 
         public async Task<IActionResult> AllReservations()
