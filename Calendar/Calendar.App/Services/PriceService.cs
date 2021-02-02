@@ -35,12 +35,20 @@ namespace Calendar.App.Services
             return currentPrice;
         }
 
+        public string TotalAmount()
+        {
+            var totalSum = db.Dates.Select(d => d.Price).Sum();
+
+            return totalSum.ToString();
+        }
+
         public async Task<PricesViewModel> ReturnPrices()
         {
             var prices = await db.Prices.Select(p => new PricesViewModel
             {
                 WorkDay = p.WorkDay,
                 NonWorkDay = p.NonWorkDay,
+                TotalAmount = TotalAmount(),
             }).FirstOrDefaultAsync();
 
             if (prices == null)

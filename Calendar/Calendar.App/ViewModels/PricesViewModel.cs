@@ -5,5 +5,7 @@
         public decimal WorkDay { get; set; }
 
         public decimal NonWorkDay { get; set; }
+
+        public string TotalAmount { get; set; }
     }
 }

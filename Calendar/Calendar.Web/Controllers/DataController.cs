@@ -9,10 +9,12 @@ namespace Calendar.Web.Controllers
     public class DataController : Controller
     {
         private readonly IDataService dataService;
+        private readonly IPriceService priceService;
 
-        public DataController(IDataService dataService)
+        public DataController(IDataService dataService, IPriceService priceService)
         {
             this.dataService = dataService;
+            this.priceService = priceService;
         }
 
         [HttpPost]
@@ -39,7 +41,7 @@ namespace Calendar.Web.Controllers
 
         public async Task<IActionResult> AllReservations()
         {
-            var model = await dataService.ShowAllReservations();
+            var model = await dataService.ShowAllReservations();           
 
             return View(model);
         }

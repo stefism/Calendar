@@ -7,6 +7,8 @@ namespace Calendar.App.Services
     {
         Task<PricesViewModel> ReturnPrices();
 
+        string TotalAmount();
+
         Task<decimal> ReturnActualPrice(bool isNonWorkDay);
     }
 }
