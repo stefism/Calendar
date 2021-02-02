@@ -1,5 +1,6 @@
 ﻿using Calendar.App.Data;
 using Calendar.App.ViewModels;
+using Funeral.App.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,24 +13,31 @@ namespace Calendar.App.Services
     {
         private ApplicationDbContext db;
         private readonly IPriceService priceService;
+        private readonly IEFRepository<Date> dateRepository;
 
-        public DataService(ApplicationDbContext db, IPriceService priceService)
+        public DataService(
+            ApplicationDbContext db, 
+            IPriceService priceService,
+            IEFRepository<Date> dateRepository)
         {
             this.db = db;
             this.priceService = priceService;
+            this.dateRepository = dateRepository;
         }
 
         public async Task ReleaseReservation(string reservationId)
         {
-            var reservation = await db.Dates.Where(r => r.Id == reservationId).FirstOrDefaultAsync();
-            
-            db.Remove(reservation);
-            await db.SaveChangesAsync();
+            var reservation = await dateRepository.All()
+                .Where(r => r.Id == reservationId).FirstOrDefaultAsync();
+
+            dateRepository.Delete(reservation);          
+
+            await dateRepository.SaveChangesAsync();            
         }
 
         public async Task<ICollection<ReservationViewModel>> ShowAllReservations()
         { 
-            var reservations = await db.Dates.Select(p => new ReservationViewModel
+            var reservations = await dateRepository.All().Select(p => new ReservationViewModel
             {
                 ReservationDateId = p.Id,
                 UserId = p.UserId,
@@ -44,13 +52,13 @@ namespace Calendar.App.Services
 
         public async Task ReserveDate(DateTime date, string userId)
         {
-            var dateToReserve = db.Dates
-                .Where(d => d.ReservedDate == date).FirstOrDefault();
+            var dateToReserve = await dateRepository.All()
+                .Where(d => d.ReservedDate == date).FirstOrDefaultAsync();
 
             dateToReserve.UserId = userId;
             dateToReserve.IsReserved = true;
             
-            await db.SaveChangesAsync();
+            await dateRepository.SaveChangesAsync();
         }
 
         public async Task AddAvailableDate(DateTime date, bool isNonWorkDay, string userId)
@@ -88,7 +96,8 @@ namespace Calendar.App.Services
                 {
                     ReservationDateId = p.Id,
                     UserId = p.UserId,
-                    Username = db.Users.Where(u => u.Id == p.UserId).Select(u => u.UserName).FirstOrDefault(),
+                    Username = db.Users.Where(u => u.Id == p.UserId)
+                    .Select(u => u.UserName).FirstOrDefault(),
                     ReservedDate = p.ReservedDate,
                     Price = p.Price.ToString(),
                 })

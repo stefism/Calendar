@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Calendar.App.Data;
 using Calendar.App.Services;
+using Funeral.App.Repositories;
 
 namespace Calendar.Web
 {
@@ -32,6 +33,10 @@ namespace Calendar.Web
             
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //Repository
+            services.AddSingleton(Configuration);
+            services.AddScoped(typeof(IEFRepository<>), typeof(EFRepository<>));
 
             services.AddTransient<IDataService, DataService>();
             services.AddTransient<IPriceService, PriceService>();
