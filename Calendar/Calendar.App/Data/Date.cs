@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Calendar.App.Data
@@ -18,6 +19,8 @@ namespace Calendar.App.Data
         public decimal? Price { get; set; }
 
         public string UserId { get; set; }
+
+        public IdentityUser User { get; set; }
 
         public bool IsReserved { get; set; }
 

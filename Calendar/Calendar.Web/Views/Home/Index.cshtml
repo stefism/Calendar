@@ -29,10 +29,10 @@
                     <div class="row">
                         <form class="mr-5" method="post" asp-controller="Home" asp-action="ChangePrices">
                             <label for="workday">Insert new workdays price: </label>
-                            <input type="number" step="any" name="workday" />
+                            <input type="number" min="0" step="any" name="workday" />
 
                             <label for="weekends">Insert new weekends price: </label>
-                            <input type="number" step="any" name="weekends" />
+                            <input type="number" min="0" step="any" name="weekends" />
 
                             <button type="submit">Change</button>
                         </form>

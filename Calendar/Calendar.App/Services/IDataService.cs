@@ -17,6 +17,6 @@ namespace Calendar.App.Services
 
         bool IsNonWorkDay(DateTime date);
 
-        Task<ICollection<ReservationViewModel>> GetDates(int year, int month);
+        Task<ICollection<ReservationViewModel>> GetReservedDates(int year, int month);
     }
 }

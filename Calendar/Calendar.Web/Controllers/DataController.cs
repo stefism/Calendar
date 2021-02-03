@@ -4,6 +4,7 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Calendar.App.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Calendar.Web.Controllers
 {
@@ -31,10 +32,10 @@ namespace Calendar.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetDates(int year, int month)
+        public async Task<JsonResult> GetReservedDates(int year, int month)
         {
             var prices = await priceService.ReturnPrices();
-            var reservedDays = await dataService.GetDates(year, month);
+            var reservedDays = await dataService.GetReservedDates(year, month);
 
             return new JsonResult(new ReservedDaysAndPricesViewModel
             {
@@ -43,6 +44,7 @@ namespace Calendar.Web.Controllers
             });
         }
 
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> AllReservations()
         {
             var model = await dataService.ShowAllReservations();           
@@ -50,6 +52,7 @@ namespace Calendar.Web.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> ReleaseReservaton(string reservationId)
         {
             await dataService.ReleaseReservation(reservationId);

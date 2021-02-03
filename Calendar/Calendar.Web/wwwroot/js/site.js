@@ -1,4 +1,9 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function confirmDelete(){
+    DayPilot.Modal.confirm(`Do you want to delete this reservation?`, { theme: "modal_rounded" }).then(function (args) {
+        if (args.result) {
+            return true;
+        }
 
-// Write your JavaScript code.
+        return false;
+    });
+}

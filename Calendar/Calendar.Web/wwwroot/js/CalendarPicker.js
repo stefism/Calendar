@@ -346,7 +346,7 @@ CalendarPicker.prototype.onValueChange = function (callback) {
 CalendarPicker.prototype._setCurrentMonthEvents = function () {
     $.ajax({
         type: "GET",
-        url: "/data/GetDates",
+        url: "/data/GetReservedDates",
         data: {
             year: this.year,
             month: (this.month + 1)

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Calendar.App.Data;
 using Calendar.App.Services;
 using Funeral.App.Repositories;
+using Calendar.App.Mapper;
 
 namespace Calendar.Web
 {
@@ -33,6 +34,9 @@ namespace Calendar.Web
             
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //Auto mapper
+            services.ConfigureAutoMapper();
 
             //Repository
             services.AddSingleton(Configuration);

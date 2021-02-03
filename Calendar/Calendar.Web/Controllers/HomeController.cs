@@ -1,4 +1,6 @@
 ﻿using Calendar.App.Services;
+using Calendar.App.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,9 +34,10 @@ namespace Calendar.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePrices(decimal workday, decimal weekends)
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> ChangePrices(ChangePricesInputModel input)
         {
-            await dataService.ChangePrices(workday, weekends);
+            await dataService.ChangePrices(input.Workday, input.Weekends);
 
             return RedirectToAction(nameof(Index));
         }

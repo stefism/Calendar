@@ -1,4 +1,5 @@
-﻿using Calendar.App.Data;
+﻿using AutoMapper;
+using Calendar.App.Data;
 using Calendar.App.ViewModels;
 using Funeral.App.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -8,21 +9,21 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace Calendar.App.Services
-{    
+{
     public class DataService : IDataService
     {
-        private ApplicationDbContext db;
+        private readonly IMapper mapper;
         private readonly IPriceService priceService;
         private readonly IEFRepository<Date> dateRepository;
         private readonly IEFRepository<Price> pricePepository;
 
         public DataService(
-            ApplicationDbContext db,
+            IMapper mapper,
             IPriceService priceService,
             IEFRepository<Date> dateRepository,
             IEFRepository<Price> pricePepository)
         {
-            this.db = db;
+            this.mapper = mapper;
             this.priceService = priceService;
             this.dateRepository = dateRepository;
             this.pricePepository = pricePepository;
@@ -33,21 +34,16 @@ namespace Calendar.App.Services
             var reservation = await dateRepository.All()
                 .Where(r => r.Id == reservationId).FirstOrDefaultAsync();
 
-            dateRepository.Delete(reservation);          
+            dateRepository.Delete(reservation);
 
-            await dateRepository.SaveChangesAsync();          
+            await dateRepository.SaveChangesAsync();
         }
 
         public async Task<ICollection<ReservationViewModel>> ShowAllReservations()
-        { 
-            var reservations = await dateRepository.All().Select(p => new ReservationViewModel
-            {
-                ReservationDateId = p.Id,
-                UserId = p.UserId,
-                Username = db.Users.Where(u => u.Id == p.UserId).Select(u => u.UserName).FirstOrDefault(),
-                ReservedDate = p.ReservedDate,
-                Price = p.Price.ToString(),
-            }).OrderBy(p => p.ReservedDate)
+        {
+            var reservations = await mapper
+                .ProjectTo<ReservationViewModel>(dateRepository.All())
+                .OrderBy(p => p.ReservedDate)
                 .ToListAsync();
 
             return reservations;
@@ -82,22 +78,16 @@ namespace Calendar.App.Services
             return IsNonWorkDay;
         }
 
-        public async Task<ICollection<ReservationViewModel>> GetDates(int year, int month)
+        public async Task<ICollection<ReservationViewModel>> GetReservedDates(int year, int month)
         {
-            return await dateRepository.All()
-                .Select(p => new ReservationViewModel
-                {
-                    ReservationDateId = p.Id,
-                    UserId = p.UserId,
-                    Username = db.Users.Where(u => u.Id == p.UserId)
-                    .Select(u => u.UserName).FirstOrDefault(),
-                    ReservedDate = p.ReservedDate,
-                    Price = p.Price.ToString(),
-                })
+            var dates = await mapper
+                .ProjectTo<ReservationViewModel>(dateRepository.All())
                 .Where(x => x.ReservedDate.HasValue &&
-                            x.ReservedDate.Value.Year == year &&
-                            x.ReservedDate.Value.Month == month)
+                              x.ReservedDate.Value.Year == year &&
+                              x.ReservedDate.Value.Month == month)
                 .ToListAsync();
+
+            return dates;
         }
 
         public async Task ChangePrices(decimal workday, decimal weekends)
