@@ -52,12 +52,20 @@ namespace Calendar.Web.Controllers
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ReleaseReservaton(string reservationId)
         {
             await dataService.ReleaseReservation(reservationId);
 
             return RedirectToAction(nameof(AllReservations));
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ReleaseUserReservaton(string reservationId)
+        {
+            await dataService.ReleaseReservation(reservationId);
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

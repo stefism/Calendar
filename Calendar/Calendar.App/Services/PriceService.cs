@@ -45,10 +45,10 @@ namespace Calendar.App.Services
             return totalSum.ToString();
         }
 
-        public async Task<PricesViewModel> ReturnPrices()
+        public async Task<PricesAndUserReservationsViewModel> ReturnPrices()
         {
             var prices = await pricePepository.All()
-                .Select(p => new PricesViewModel
+                .Select(p => new PricesAndUserReservationsViewModel
             {
                 WorkDay = p.WorkDay,
                 NonWorkDay = p.NonWorkDay,
@@ -57,7 +57,7 @@ namespace Calendar.App.Services
 
             if (prices == null)
             {
-                prices = new PricesViewModel
+                prices = new PricesAndUserReservationsViewModel
                 {
                     WorkDay = 0,
                     NonWorkDay = 0,

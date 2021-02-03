@@ -1,8 +1,6 @@
 ﻿using Calendar.App.ErrMessages;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Calendar.App.ViewModels
 {

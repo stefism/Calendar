@@ -1,4 +1,4 @@
-﻿@model Calendar.App.ViewModels.PricesViewModel
+﻿@model Calendar.App.ViewModels.PricesAndUserReservationsViewModel
 @{ ViewData["Title"] = "Calendar"; }
 
 <!DOCTYPE html>
@@ -43,6 +43,36 @@
                 <div id="showcase-wrapper">
                     <div id="myCalendarWrapper"></div>
                 </div>}
+
+@if (!User.IsInRole("Admin") && User.Identity.IsAuthenticated)
+{
+    <h3>All your reservations</h3>
+    <hr />
+    <table class="table table-hover">
+
+        <tr>           
+            <th>Reserved date</th>
+            <th>Price</th>
+            <th>Release reservation </th>
+        </tr>
+
+        @foreach (var reservation in Model.UsersReservations)
+        {
+            <tr>
+                <td>@reservation.ReservedDate</td>
+                <td>@reservation.Price</td>
+                <td>
+                    <a onclick="return confirm('Do you want to delete this reservation?')" class="btn btn-success" asp-controller="Data" asp-action="ReleaseUserReservaton" asp-route-reservationId="@reservation.ReservationDateId">Release</a>
+                </td>
+            </tr>
+        }
+
+    </table>
+    <br />
+    <br />
+    <br />
+}
+
 </body>
 </html>
 

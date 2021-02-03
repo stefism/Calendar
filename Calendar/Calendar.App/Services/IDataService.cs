@@ -9,6 +9,8 @@ namespace Calendar.App.Services
     {
         Task<ICollection<ReservationViewModel>> ShowAllReservations();
 
+        Task<ICollection<UserReservationViewModel>> ShowUserReservation(string userId);
+
         Task ReleaseReservation(string reservationId);
 
         Task AddAvailableDate(DateTime date, bool IsNonWorkDay, string userId);

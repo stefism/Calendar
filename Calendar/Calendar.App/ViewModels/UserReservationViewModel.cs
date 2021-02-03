@@ -2,11 +2,9 @@
 
 namespace Calendar.App.ViewModels
 {
-    public class ReservationViewModel
+    public class UserReservationViewModel
     {
         public string ReservationDateId { get; set; }
-
-        public string Username { get; set; }
 
         public DateTime? ReservedDate { get; set; }
 

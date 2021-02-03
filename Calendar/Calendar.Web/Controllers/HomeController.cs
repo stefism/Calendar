@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Calendar.Web.Controllers
@@ -30,6 +31,19 @@ namespace Calendar.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var model = await priceService.ReturnPrices();
+            var userId = string.Empty;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            else
+            {
+                userId = "none";
+            }
+
+            model.UsersReservations = await dataService.ShowUserReservation(userId);
+            
             return View(model);
         }
 

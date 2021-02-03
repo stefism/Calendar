@@ -39,6 +39,32 @@ namespace Calendar.App.Services
             await dateRepository.SaveChangesAsync();
         }
 
+        public async Task<ICollection<UserReservationViewModel>> ShowUserReservation(string userId)
+        {
+            if (userId == "none")
+            {
+                var reservation = await dateRepository.All()
+                    .Select(d => new UserReservationViewModel
+                    {
+                        ReservationDateId = "none",
+                        Price = "none",
+                    }).ToListAsync();
+
+                return reservation;
+            }
+
+            var resevrations = await dateRepository.All()
+                .Where(r => r.UserId == userId)
+                .Select(d => new UserReservationViewModel
+                {                   
+                    ReservationDateId = d.Id,
+                    ReservedDate = d.ReservedDate,
+                    Price = d.Price.ToString(),
+                }).ToListAsync();
+
+            return resevrations;
+        }
+
         public async Task<ICollection<ReservationViewModel>> ShowAllReservations()
         {
             var reservations = await mapper

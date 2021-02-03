@@ -5,7 +5,7 @@ namespace Calendar.App.Services
 {
     public interface IPriceService
     {
-        Task<PricesViewModel> ReturnPrices();
+        Task<PricesAndUserReservationsViewModel> ReturnPrices();
 
         string TotalAmount();
 
