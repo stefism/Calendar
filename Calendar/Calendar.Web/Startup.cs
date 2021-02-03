@@ -1,3 +1,8 @@
+using Calendar.App.Data;
+using Calendar.App.Filters;
+using Calendar.App.Mapper;
+using Calendar.App.Services;
+using Funeral.App.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -5,10 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Calendar.App.Data;
-using Calendar.App.Services;
-using Funeral.App.Repositories;
-using Calendar.App.Mapper;
 
 namespace Calendar.Web
 {
@@ -27,12 +28,17 @@ namespace Calendar.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            
+
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            
-            services.AddControllersWithViews();
+
+            //services.AddControllersWithViews();
+            services.AddControllersWithViews(options => 
+                { 
+                    options.Filters.Add<ActionFilter>(); 
+                });
+
             services.AddRazorPages();
 
             //Auto mapper
