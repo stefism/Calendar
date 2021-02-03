@@ -181,9 +181,7 @@ CalendarPicker.prototype._insertCalendarIntoWrapper = function () {
                                 date: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
                             },
                             success: function () {
-                                event.target.isReserved = true;
-                                event.target.innerText = event.target.innerText.substring(0, 2) + "\r\nReserved!";
-                                event.target.setAttribute("style", "background-color: rgba(247, 6, 33, 0.3)");
+                                window.location.reload(true);
                             },
                             error: function (error) {
                                 alert('Something went wrong!');

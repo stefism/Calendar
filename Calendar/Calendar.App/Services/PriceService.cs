@@ -25,6 +25,11 @@ namespace Calendar.App.Services
             var prices = await pricePepository.All().FirstOrDefaultAsync();
             decimal currentPrice;
 
+            if (prices == null)
+            {
+                return 0.00m;
+            }
+
             if (isNonWorkDay)
             {
                 currentPrice = prices.NonWorkDay;
@@ -61,6 +66,7 @@ namespace Calendar.App.Services
                 {
                     WorkDay = 0,
                     NonWorkDay = 0,
+                    TotalAmount = TotalAmount(),
                 };
             }
 
