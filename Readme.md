@@ -10,9 +10,9 @@ The user can see all the reserved dates and after making a reservation, under th
 
 When the user has administrative rights, he sees above the calendar information with the current prices for holidays and weekdays and the total amount of revenue from all reservations. It is also possible to change the current prices, see all reservations made by all users and remove them.
 
-![](https://i.ibb.co/9wDQLp3/2021-02-04-005019.png)
+![](https://i.ibb.co/tzwhMC0/2021-02-04-010558.png)
 
-![](https://i.ibb.co/7xcy8Nm/2021-02-04-005127.png)
+![](https://i.ibb.co/ftKvxzq/2021-02-04-010711.png)
 
 ## :hammer: Built With
 - ASP.NET [CORE 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1 "CORE 3.1") MVC
