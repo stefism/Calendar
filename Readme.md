@@ -20,6 +20,7 @@ When the user has administrative rights, he sees above the calendar information 
 - Razor pages for user identity system
 - ASP.NET CORE view components
 - ASP.NET Core areas
+- JavaScript
 - MSSQL Server
 - Bootstrap
 - Ajax
