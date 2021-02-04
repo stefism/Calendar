@@ -41,15 +41,7 @@ namespace Calendar.App.Services
 
             return currentPrice;
         }
-
-        public string TotalAmount()
-        {
-            var totalSum = dateRepository.All()
-                .Select(d => d.Price).Sum();
-
-            return totalSum.ToString();
-        }
-
+    
         public async Task<PricesAndUserReservationsViewModel> ReturnPrices()
         {
             var prices = await pricePepository.All()
@@ -71,6 +63,14 @@ namespace Calendar.App.Services
             }
 
             return prices;
+        }
+
+        private string TotalAmount()
+        {
+            var totalSum = dateRepository.All()
+                .Select(d => d.Price).Sum();
+
+            return totalSum.ToString();
         }
     }
 }
