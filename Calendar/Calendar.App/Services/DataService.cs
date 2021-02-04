@@ -41,22 +41,10 @@ namespace Calendar.App.Services
 
         public async Task<ICollection<UserReservationViewModel>> ShowUserReservation(string userId)
         {
-            if (userId == "none")
-            {
-                var reservation = await dateRepository.All()
-                    .Select(d => new UserReservationViewModel
-                    {
-                        ReservationDateId = "none",
-                        Price = "none",
-                    }).ToListAsync();
-
-                return reservation;
-            }
-
             var resevrations = await dateRepository.All()
                 .Where(r => r.UserId == userId)
                 .Select(d => new UserReservationViewModel
-                {                   
+                {
                     ReservationDateId = d.Id,
                     ReservedDate = d.ReservedDate,
                     Price = d.Price.ToString(),

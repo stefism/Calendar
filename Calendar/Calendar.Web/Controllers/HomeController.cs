@@ -39,7 +39,7 @@ namespace Calendar.Web.Controllers
             }
             else
             {
-                userId = "none";
+                return View();
             }
 
             model.UsersReservations = await dataService.ShowUserReservation(userId);
