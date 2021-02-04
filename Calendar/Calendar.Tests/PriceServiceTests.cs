@@ -5,8 +5,6 @@ using Calendar.Tests.Common;
 using Funeral.App.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -39,7 +37,7 @@ namespace Calendar.Tests
             Assert.Equal(0, price);
 
             await dataService.ChangePrices(5, 10);
-            
+
             price = await priceService.ReturnActualPrice(isNonWorkDay);
             Assert.Equal(result, price);
         }

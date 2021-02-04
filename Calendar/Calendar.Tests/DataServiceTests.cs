@@ -1,13 +1,12 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Calendar.App.Data;
 using Calendar.App.Services;
 using Calendar.Tests.Common;
 using Funeral.App.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Moq;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Calendar.Tests
@@ -31,7 +30,7 @@ namespace Calendar.Tests
             var priceService = new PriceService(dateRepository, priceRepository);
             var dataService = new DataService(mapper, priceService, dateRepository, priceRepository);
 
-            await dataService.AddAvailableDate(DateTime.Now , true ,"User Id 1");
+            await dataService.AddAvailableDate(DateTime.Now, true, "User Id 1");
             await dataService.AddAvailableDate(DateTime.Now.AddDays(1), false, "User Id 2");
             await dateRepository.SaveChangesAsync();
 
@@ -102,7 +101,7 @@ namespace Calendar.Tests
             var isNoneWorkDay = dataService.IsNonWorkDay(workDay);
             Assert.False(isNoneWorkDay);
 
-            isNoneWorkDay = dataService.IsNonWorkDay(nonWorkDay);          
+            isNoneWorkDay = dataService.IsNonWorkDay(nonWorkDay);
             Assert.True(isNoneWorkDay);
         }
 

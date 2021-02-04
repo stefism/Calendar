@@ -35,8 +35,9 @@ namespace Calendar.Web
 
             //services.AddControllersWithViews();
             services.AddControllersWithViews(options => 
-                { 
-                    options.Filters.Add<ActionFilter>(); 
+                {
+                    options.Filters.Add<ActionFilter>(int.MinValue);
+                    options.Filters.Add<ExceptionFilter>(int.MinValue);
                 });
 
             services.AddRazorPages();
@@ -53,9 +54,16 @@ namespace Calendar.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env, 
+            ApplicationDbContext context,
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             context.Database.Migrate();
+            ApplicationDbInitializer.SeedUsers(userManager, roleManager);
+
 
             if (env.IsDevelopment())
             {
@@ -64,7 +72,7 @@ namespace Calendar.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }

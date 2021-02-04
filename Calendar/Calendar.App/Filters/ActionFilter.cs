@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Calendar.App.Filters
 {
@@ -15,8 +13,8 @@ namespace Calendar.App.Filters
             {
                 var errors = context.ModelState.Values
                     .SelectMany(m => m.Errors.Select(e => e.ErrorMessage));
-                
-                throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
+
+                throw new ArgumentException(string.Join(Environment.NewLine, errors));
             }
 
             await next();
