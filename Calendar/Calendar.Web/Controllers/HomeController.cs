@@ -42,7 +42,7 @@ namespace Calendar.Web.Controllers
                 return View();
             }
 
-            model.UsersReservations = await dataService.ShowUserReservation(userId);
+            model.UsersReservations = await dataService.ShowUserReservations(userId);
             
             return View(model);
         }

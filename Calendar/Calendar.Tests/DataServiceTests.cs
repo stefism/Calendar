@@ -59,7 +59,7 @@ namespace Calendar.Tests
             await dataService.AddAvailableDate(DateTime.Now.AddDays(1), false, "User Id 2");
             await dateRepository.SaveChangesAsync();
 
-            var reservations = await dataService.ShowUserReservation("User Id 1");
+            var reservations = await dataService.ShowUserReservations("User Id 1");
 
             var count = reservations.Count();
 

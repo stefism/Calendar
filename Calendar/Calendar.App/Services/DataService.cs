@@ -39,7 +39,7 @@ namespace Calendar.App.Services
             await dateRepository.SaveChangesAsync();
         }
 
-        public async Task<ICollection<UserReservationViewModel>> ShowUserReservation(string userId)
+        public async Task<ICollection<UserReservationViewModel>> ShowUserReservations(string userId)
         {
             var resevrations = await dateRepository.All()
                 .Where(r => r.UserId == userId)
@@ -48,7 +48,8 @@ namespace Calendar.App.Services
                     ReservationDateId = d.Id,
                     ReservedDate = d.ReservedDate,
                     Price = d.Price.ToString(),
-                }).ToListAsync();
+                }).OrderBy(p => p.ReservedDate)
+                .ToListAsync();
 
             return resevrations;
         }

@@ -9,7 +9,7 @@ namespace Calendar.App.Services
     {
         Task<ICollection<ReservationViewModel>> ShowAllReservations();
 
-        Task<ICollection<UserReservationViewModel>> ShowUserReservation(string userId);
+        Task<ICollection<UserReservationViewModel>> ShowUserReservations(string userId);
 
         Task ReleaseReservation(string reservationId);
 
