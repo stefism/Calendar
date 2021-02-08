@@ -349,37 +349,50 @@ CalendarPicker.prototype._setCurrentMonthEvents = function () {
             year: this.year,
             month: (this.month + 1)
         },
-        success: function (data) {
-            console.log(data);
+        success: function (data) {            
             var calendarDays = document.getElementsByTagName('time');
             var weekendPrice = data.prices.nonWorkDay == null ? 0 : data.prices.nonWorkDay;
             var workDaysPrice = data.prices.workDay == null ? 0 : data.prices.workDay;
 
             for (let timeTag of calendarDays) {
+
+                let currentDayValue = timeTag.innerText;
+                timeTag.innerText = "";
+                let paragraph = document.createElement('div');
+                paragraph.classList.add("numbers")
+                paragraph.innerText = currentDayValue;
+                timeTag.appendChild(paragraph);
+
+
                 if (timeTag.value == null) {
                     continue;
                 }
 
                 var reservedDate = GetReservedDateIfExists(timeTag.value, data.reservedDays);
 
+                let currentDayState = document.createElement('div');
                 if (reservedDate == null) {
 
                     var day = timeTag.value.getDay();
-
+                    
                     //Check if the day is Saturday or Sunday
                     if (day === 6 || day === 0) {
-                        timeTag.innerText += "\r\nPrice: " + weekendPrice.toFixed(2);
+                        currentDayState.innerText = "Price: " + weekendPrice.toFixed(2);
+                        //timeTag.innerText += "\r\nPrice: " + weekendPrice.toFixed(2);
                     } else {
-                        timeTag.innerText += "\r\nPrice: " + workDaysPrice.toFixed(2);
+                        currentDayState.innerText = "Price: " + workDaysPrice.toFixed(2);
+                        //timeTag.innerText += "\r\nPrice: " + workDaysPrice.toFixed(2);
                     }
 
                     timeTag.isReserved = false;
-                    timeTag.setAttribute("style", "background-color: rgba(60, 176, 91, 0.3);");
+                    timeTag.setAttribute("style", "background-color: rgba(60, 176, 91, 0.3);display: block;align-content: center");
                 } else {
                     timeTag.isReserved = true;
-                    timeTag.innerText += "\r\nReserved!";
-                    timeTag.setAttribute("style", "background-color: rgba(247, 6, 33, 0.3)");
+                    currentDayState.innerText = "Reserved!"
+                    //timeTag.innerText += "\r\nReserved!";
+                    timeTag.setAttribute("style", "background-color: rgba(247, 6, 33, 0.3);display: block;");
                 }
+                timeTag.appendChild(currentDayState);
             }
         },
         error: function (error) {
